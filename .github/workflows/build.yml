@@ -15,7 +15,8 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Verify and unpack source bundle
         run: |
-          echo 'a8a167526750a6144e2eb77ea8af601407aeb8089c86f006191e9043f5538276  TR3600-build-kit.zip' | sha256sum -c -
+          base64 --decode TR3600-build-kit.b64 > TR3600-build-kit.zip
+          echo 'd3920dca774b3538d1750bbfd45be2c63d1c552ee58ed404f8f657a48ea24733  TR3600-build-kit.zip' | sha256sum -c -
           python3 - <<'PYCODE'
           import hashlib, json, pathlib, zipfile
           with zipfile.ZipFile('TR3600-build-kit.zip') as z:
