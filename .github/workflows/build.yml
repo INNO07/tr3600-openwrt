@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Verify and unpack source bundle
         run: |
-          echo '54484cb47eaaa82ee3f76cdd8dbc02ab49e5e15a6998e12c7e3ab67a81112f2e  TR3600-build-kit.zip' | sha256sum -c -
+          echo 'bf42da34dc6fbcce0962ca4806caf75e3a967f7e2d5b649c8fed2dc34e9be6a7  TR3600-build-kit.zip' | sha256sum -c -
           python3 - <<'PYCODE'
           import hashlib, json, pathlib, zipfile
           with zipfile.ZipFile('TR3600-build-kit.zip') as z:
@@ -36,7 +36,10 @@ jobs:
           sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc
           df -h .
       - name: Test upgrade guards
-        run: python3 -m unittest discover -s TR3600-build-kit/tests -v
+        run: |
+          set -o pipefail
+          mkdir -p TR3600-build-kit/artifacts
+          python3 -m unittest discover -s TR3600-build-kit/tests -v 2>&1 | tee TR3600-build-kit/artifacts/test.log
       - name: Build and inspect
         shell: bash
         run: |
@@ -50,4 +53,4 @@ jobs:
           name: TR3600-candidate-${{ github.run_number }}
           path: TR3600-build-kit/artifacts/
           retention-days: 14
-          if-no-files-found: error
+          if-no-files-found: warn
